@@ -12,7 +12,7 @@ const incu = axios.create({
 //API
 export const authAPI = {
     me() {
-        return incu.get<ResponseType<MeResDataType>>(`auth/me`, )
+        return incu.get<ResponseType<AuthInfoType>>(`auth/me`)
     },
     login(data: LoginReqParamsType) {
         return incu.post<ResponseType<LoginResDataType>>(`auth/login`, {data})
@@ -22,7 +22,7 @@ export const authAPI = {
     }
 }
 
-export const todolistsAPI = {
+export const todolistsApi = {
     getTodolists() {
         return incu.get<TodolistType[]>(`todo-lists`);
     },
@@ -68,7 +68,7 @@ export type LoginReqParamsType = {
 export type LoginResDataType = {
     userId: string
 }
-export type MeResDataType = {
+export type AuthInfoType = {
     id: number;
     email: string;
     login: string;
