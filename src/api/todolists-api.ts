@@ -12,46 +12,56 @@ const incu = axios.create({
 //API
 export const authAPI = {
     me() {
-        return incu.get<ResponseType<AuthInfoType>>(`auth/me`)
+        return incu.get<ResType<AuthUserInfoType>>(`auth/me`);
+
     },
     login(data: LoginReqParamsType) {
-        return incu.post<ResponseType<LoginResDataType>>(`auth/login`, {data})
+        return incu.post<ResType<LoginResDataType>>(`auth/login`, {data});
+
     },
     logout() {
-        return incu.delete<ResponseType>(`auth/login`)
+        return incu.delete<ResType>(`auth/login`);
+
     }
 }
 
 export const todolistsApi = {
     getTodolists() {
         return incu.get<TodolistType[]>(`todo-lists`);
+
     },
     createTodolist(title: string) {
-        return incu.post<ResponseType<{item: TodolistType}>>(`todo-lists`, {title});
+        return incu.post<ResType<{item: TodolistType}>>(`todo-lists`, {title});
+
     },
     deleteTodolist(todolistId: string) {
-        return incu.delete<ResponseType>(`todo-lists/${todolistId}`);
+        return incu.delete<ResType>(`todo-lists/${todolistId}`);
+
     },
     updateTodolist(todolistId: string, title: string) {
-        return incu.put<ResponseType>(`todo-lists/${todolistId}`, {title});
+        return incu.put<ResType>(`todo-lists/${todolistId}`, {title});
+
     },
     getTasks(todolistId: string) {
         return incu.get<GetTasksType>(`todo-lists/${todolistId}/tasks`);
+
     },
     createTask(todolistId: string, title: string) {
-        return incu.post<ResponseType<{items: TaskType[]}>>(`todo-lists/${todolistId}/tasks`, {title});
+        return incu.post<ResType<{items: TaskType[]}>>(`todo-lists/${todolistId}/tasks`, {title});
+
     },
     deleteTask(todolistId: string, taskId: string) {
-        return incu.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`);
+        return incu.delete<ResType>(`todo-lists/${todolistId}/tasks/${taskId}`);
+
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-        return incu.put<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
-    }
+        return incu.put<ResType>(`todo-lists/${todolistId}/tasks/${taskId}`, model);
 
+    }
 }
 
 //types
-export type ResponseType<D = {}> = {
+export type ResType<D = {}> = {
     resultCode: number;
     messages: string[];
     data: D
@@ -68,7 +78,7 @@ export type LoginReqParamsType = {
 export type LoginResDataType = {
     userId: string
 }
-export type AuthInfoType = {
+export type AuthUserInfoType = {
     id: number;
     email: string;
     login: string;
@@ -124,4 +134,8 @@ export enum TaskPrioritiesType {
     Hi = 2,
     Urgently = 3,
     Later = 4
+}
+export enum ResultCodesEnum {
+    Success = 0,
+    Error = 1
 }

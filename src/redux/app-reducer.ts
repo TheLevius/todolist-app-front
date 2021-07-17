@@ -1,12 +1,12 @@
 import {Dispatch} from 'redux';
-import {authAPI, AuthInfoType} from '../api/todolists-api';
+import {authAPI, ResultCodesEnum} from '../api/todolists-api';
 import { batch } from 'react-redux'
+import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
 
 const initialState: InitialStateType = {
     status: 'idle',
     isInitialized: false,
-    error: null,
-    userInfo: null
+    error: null
 }
 
 export const appReducer = (state: InitialStateType = initialState, action: AppActionsType): InitialStateType => {
@@ -14,7 +14,6 @@ export const appReducer = (state: InitialStateType = initialState, action: AppAc
         case 'APP/STATUS_CHANGED':
         case 'APP/ISINITIALIZED_CHANGED':
         case 'APP/ERROR_DETECTED':
-        case 'APP/USER_INFO_SETTLED':
             return({
                 ...state,
                 ...action.payload
@@ -25,32 +24,32 @@ export const appReducer = (state: InitialStateType = initialState, action: AppAc
 }
 
 export const appActions = {
-    statusChanged: (status: RequestStatusType) => ({type: 'APP/STATUS_CHANGED', payload: {status}} as const),
-    isInitializedChanged: (value: boolean) => ({type: 'APP/ISINITIALIZED_CHANGED', payload: {isInitialized: value}} as const),
-    errorDetected: (error: string | null) => ({type: 'APP/ERROR_DETECTED', payload: {error}} as const),
-    userInfoSettled: (userInfo: any) => ({type: 'APP/USER_INFO_SETTLED', payload: {userInfo}} as const)
+    statusChangedAC: (status: RequestStatusType) => ({type: 'APP/STATUS_CHANGED', payload: {status}} as const),
+    isInitializedChangedAC: (value: boolean) => ({type: 'APP/ISINITIALIZED_CHANGED', payload: {isInitialized: value}} as const),
+    errorDetectedAC: (error: string | null) => ({type: 'APP/ERROR_DETECTED', payload: {error}} as const)
 };
 
 export const initializeAppTC = () => async (dispatch: Dispatch) => {
 
     try {
-        dispatch(appActions.statusChanged('loading'))
-        const response = await authAPI.me()
-        batch(()=>{
-            dispatch(appActions.userInfoSettled(response.data))
-            dispatch(appActions.statusChanged('succeeded'))
-        })
+        dispatch(appActions.statusChangedAC('loading'))
+        const {data} = await authAPI.me()
+        if (data.resultCode === ResultCodesEnum.Success) {
+            batch(()=>{
+                dispatch(appActions.statusChangedAC('succeeded'))
+            })
+        } else {
+            appErrorHandle(data, dispatch)
+        }
     }
     catch(error) {
         batch(()=>{
-            dispatch(appActions.statusChanged('failed'))
-            dispatch(appActions.errorDetected(error))
+            netWorkErrorHandle(error, dispatch)
         })
     }
     finally {
-        dispatch(appActions.isInitializedChanged(true))
+        dispatch(appActions.isInitializedChangedAC(true))
     }
-
 }
 
 type InferActionsType<T> = T extends {[key: string]: infer P } ? P : never;
@@ -61,5 +60,4 @@ export type InitialStateType = {
     status: RequestStatusType
     isInitialized: boolean;
     error: string | null;
-    userInfo: AuthInfoType | null
 }
