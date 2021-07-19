@@ -37,18 +37,17 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(()=>{
                 dispatch(appActions.statusChangedAC('succeeded'))
+                dispatch(appActions.isInitializedChangedAC(true))
             })
         } else {
             appErrorHandle(data, dispatch)
+
         }
     }
     catch(error) {
         batch(()=>{
             netWorkErrorHandle(error, dispatch)
         })
-    }
-    finally {
-        dispatch(appActions.isInitializedChangedAC(true))
     }
 }
 

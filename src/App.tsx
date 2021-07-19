@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useState} from 'react';
 import 'antd/dist/antd.css';
 import './App.css';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,9 +8,12 @@ import {initializeAppTC, RequestStatusType} from './redux/app-reducer';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
 import Layout, {Content, Footer, Header} from 'antd/lib/layout/layout';
-import {message, Space, Spin} from 'antd';
-import Button from 'antd/lib/button';
-
+import {Button, message, Space, Spin} from 'antd';
+import Breadcrumb from 'antd/lib/breadcrumb';
+import Card from 'antd/lib/card';
+import Input from 'antd/lib/input';
+import {Todolist} from './components/Todolist/Todolist';
+import {AddItemForm} from './components/AddItemForm/AddItemForm';
 
 
 export const App = () => {
@@ -21,32 +24,41 @@ export const App = () => {
 
     const initNotification = 'initializeNotificatoin';
 
-    const initializationMessage = () => {
 
-        if (status === 'loading') {
-            message.loading({content: 'initializing!', key: initNotification, duration: 0})
-        } else if (status === 'succeeded') {
-            message.success({content: 'App Initialized!', key: initNotification, duration: 3})
-        } else if (status === 'failed') {
-            message.warning({content: 'App Initialized without authorization!', key: initNotification, duration: 3})
-        }
+    const initializationMessage = useCallback((status: string) => {
+            if (status === 'loading') {
+                message.loading({content: 'initializing!', key: initNotification, duration: 0, className: 'custom-class', style: {marginTop: '20vh'}})
+            } else if (status === 'succeeded') {
+                message.success({content: 'App Initialized!', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
+            } else if (status === 'failed') {
+                message.warning({content: 'App Initialized without authorization!', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
+            } else if (error?.length) {
+                message.error({content: error, key: initNotification, duration: 5, className: 'custom-class', style: {marginTop: '20vh'}})
+            }
 
-    };
+    }, [error]);
 
     useEffect(()=>{
         if (!isInitialized) {
+            console.log(`initialization requested, status: ${isInitialized}`)
             dispatch(initializeAppTC())
         }
+    }, [dispatch, isInitialized])
 
-       if (status !== 'idle') {
-           initializationMessage()
-       }
-    }, [dispatch, status])
+
+    useEffect(()=>{
+        if (status !== 'idle') {
+            console.log('status: ', status)
+            initializationMessage(status)
+        }
+    }, [dispatch, status, initializationMessage])
+
     console.log('App rendered')
+
     if (!isInitialized) {
         return(
             <div className='App'>
-                <Space size='middle'>
+                <Space size='large'>
                     <Spin size='large' tip='Initialize...'/>
                 </Space>
             </div>
@@ -54,44 +66,43 @@ export const App = () => {
     }
 
     return (
-        <>
-            <Layout>
-                <Header style={{backgroundColor: '#6d8aa8'}}>
-                    <Row justify={'center'}>
-                        <Col span={1}>
-                            <div className={'logo'} style={{color: '#fff', maxWidth: '32px'}}>
-                                <img src={fastifyLogo} alt='fastify-logotype' />
-                            </div>
-                        </Col>
-                        <Col span={5}>
-                            <h3 style={{color: '#fff'}}>
-                               Todolist Application
-                            </h3>
-                        </Col>
-                    </Row>
-                </Header>
-                <Content>
 
-                </Content>
-                <Footer>
+        <Layout className={'layout'}>
+            <Header style={{backgroundColor: '#6d8aa8'}}>
+                <Row justify={'start'}>
+                    <Col span={1}>
+                        <img src={fastifyLogo} alt='fastify logotype' style={{maxWidth: '32px'}}/>
+                    </Col>
+                    <Col span={6}>
+                        <h3 style={{color: '#fff'}}>
+                            Todolist Application
+                        </h3>
+                    </Col>
+                </Row>
+            </Header>
+            <Content className={'site-layout-content'} style={{padding: '0 50px', margin: '0 auto'}}>
+                <Breadcrumb style={{margin: '16px 0'}}>
+                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    <Breadcrumb.Item>App</Breadcrumb.Item>
+                </Breadcrumb>
+                <div className="site-layout-background" style={{flexDirection: 'column', maxWidth: '1200px'}}>
+                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', maxWidth: 'calc(25% - 16px)', margin: '8px'}}>
+                        <AddItemForm />
+                    </div>
+                    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start'}}>
+                        <Todolist/>
+                        <Todolist/>
+                        <Todolist/>
+                        <Todolist/>
+                        <Todolist/>
+                    </div>
+                </div>
+            </Content>
 
-                </Footer>
-            </Layout>
-        </>
-        // <div className={'App'}>
-        //     <h1>
-        //         App is initialized
-        //     </h1>
-        //     <h3>with <span style={status === 'succeeded'
-        //             ? ({color: '#3f8442'})
-        //             : status === 'loading'
-        //                 ? ({color: '#dacd00'})
-        //                 : ({color: '#b70000'})
-        //         }>{status}
-        //         </span> authorization
-        //     </h3>
-        //
-        // </div>
+            <Footer style={{textAlign: 'center'}}>
+                Todolist Application ©2021 Created by Nikita Levitski
+            </Footer>
+        </Layout>
     );
 }
 
