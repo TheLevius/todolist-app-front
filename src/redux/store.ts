@@ -2,10 +2,12 @@ import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import {appReducer} from './app-reducer';
 import {authReducer} from './auth-reducer';
+import {todolistReducer} from './todolist-reducer';
 
 let rootReducer = combineReducers({
     app: appReducer,
-    auth: authReducer
+    auth: authReducer,
+    todolist: todolistReducer
 })
 
 type RootReducerType = typeof rootReducer;

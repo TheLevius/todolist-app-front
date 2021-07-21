@@ -21,7 +21,6 @@ export const authAPI = {
     },
     logout() {
         return incu.delete<ResType>(`auth/login`);
-
     }
 }
 

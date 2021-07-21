@@ -23,13 +23,11 @@ export const App = () => {
     const error = useSelector<AppStateType, string | null>(state => state.app.error);
 
     const initNotification = 'initializeNotificatoin';
-
-
     const initializationMessage = useCallback((status: string) => {
             if (status === 'loading') {
                 message.loading({content: 'initializing!', key: initNotification, duration: 0, className: 'custom-class', style: {marginTop: '20vh'}})
             } else if (status === 'succeeded') {
-                message.success({content: 'App Initialized!', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
+                message.success({content: 'App Initialized!', key: initNotification, duration: 1, className: 'custom-class', style: {marginTop: '20vh'}})
             } else if (status === 'failed') {
                 message.warning({content: 'App Initialized without authorization!', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
             } else if (error?.length) {
@@ -37,6 +35,10 @@ export const App = () => {
             }
 
     }, [error]);
+
+    const addTodolist = (title: string) => {
+
+    }
 
     useEffect(()=>{
         if (!isInitialized) {
@@ -87,7 +89,7 @@ export const App = () => {
                 </Breadcrumb>
                 <div className="site-layout-background" style={{flexDirection: 'column', maxWidth: '1200px'}}>
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', maxWidth: 'calc(25% - 16px)', margin: '8px'}}>
-                        <AddItemForm />
+                        <AddItemForm addItem={addTodolist} />
                     </div>
                     <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start'}}>
                         <Todolist/>

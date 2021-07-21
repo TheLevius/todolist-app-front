@@ -3,17 +3,23 @@ import {Button} from 'antd';
 import {EnterOutlined, PlusCircleFilled} from '@ant-design/icons/lib';
 import Input from 'antd/lib/input';
 
-export const AddItemForm: FC<{bordered?: boolean}> = ({bordered = true, ...props}) => {
+export const AddItemForm: FC<{bordered?: boolean, addItem: (title: string) => void}> = ({bordered = true, addItem, ...props}) => {
     const [inputValue, setInputValue] = useState<string>('')
     const onChangeHandle = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value)
     }
 
+    const addItemHandler = () => {
+        if (inputValue.trim() !== '') {
+            addItem(inputValue);
+            setInputValue('');
+        }
+    }
+
     const onSubmitHandle = (e: KeyboardEvent<HTMLInputElement> | FocusEvent<HTMLInputElement>) => {
         if ((e as KeyboardEvent<HTMLInputElement>).key === 'Enter'
             || (e as FocusEvent<HTMLInputElement>).type === 'blur' ) {
-            console.log('submit')
-            setInputValue('')
+            addItemHandler();
         }
     }
 

@@ -8,6 +8,10 @@ import {AddItemForm} from '../AddItemForm/AddItemForm';
 
 export const Todolist: FC<{}> =(props) => {
 
+    const addTaskHandle = (title: string) => {
+        console.log(title)
+    }
+
     return (
         <Card style={{minWidth: 'calc(25% - 16px)', maxWidth: 'calc(33.33% - 16px)', flexGrow: 1, margin: '8px'}} title={
             <div style={{display: 'flex', alignItems: 'center'}}>
@@ -28,7 +32,7 @@ export const Todolist: FC<{}> =(props) => {
             </div>
         } bordered={false}>
             <div style={{display: 'flex'}}>
-                <AddItemForm />
+                <AddItemForm addItem={addTaskHandle}/>
             </div>
             <div style={{display: 'flex', flexDirection: 'column'}}>
                 <Task/>
