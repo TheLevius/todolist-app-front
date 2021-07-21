@@ -46,7 +46,7 @@ export const todolistsApi = {
 
     },
     createTask(todolistId: string, title: string) {
-        return incu.post<ResType<{items: TaskType[]}>>(`todo-lists/${todolistId}/tasks`, {title});
+        return incu.post<ResType<{item: TaskType}>>(`todo-lists/${todolistId}/tasks`, {title});
 
     },
     deleteTask(todolistId: string, taskId: string) {
@@ -54,7 +54,7 @@ export const todolistsApi = {
 
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-        return incu.put<ResType>(`todo-lists/${todolistId}/tasks/${taskId}`, model);
+        return incu.put<ResType<UpdateTaskModelType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model);
 
     }
 }
@@ -118,6 +118,11 @@ export type UpdateTaskModelType = {
     deadline: string;
     status: TaskStatusesType;
     priority: TaskPrioritiesType;
+    completed: boolean
+    id: string
+    todoListId: string
+    order: number
+    addedDate: string
 }
 
 export enum TaskStatusesType {
