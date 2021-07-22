@@ -13,7 +13,13 @@ import Button from 'antd/lib/button';
 import { Typography} from 'antd';
 const {Text} = Typography;
 
-export const EditableSpan: FC<{strong?: boolean, style?: CSSProperties, bordered?: boolean}> = ({strong = false, bordered = true, style, ...props}) => {
+export const EditableSpan: FC<{
+    title?: string;
+    strong?: boolean;
+    style?: CSSProperties;
+    bordered?: boolean;
+    onTitleChange: (title: string) => void
+}> = ({onTitleChange, title = 'empty', strong = false, bordered = true, style, ...props}) => {
     const [isEditMode, setIsEditMode] = useState<boolean>(false)
     const [content, setContent] = useState<string>('testContent')
 
@@ -25,8 +31,8 @@ export const EditableSpan: FC<{strong?: boolean, style?: CSSProperties, bordered
         | FocusEvent<HTMLInputElement>) => {
         if ((event as KeyboardEvent<HTMLInputElement>).key === 'Enter'
             || (event as FocusEvent<HTMLInputElement>).type === 'blur' ) {
-            console.log(event)
-            setIsEditMode(prev => !prev)
+            onTitleChange(content);
+            setIsEditMode(prev => !prev);
         }
     }
 

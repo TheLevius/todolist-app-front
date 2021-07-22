@@ -5,9 +5,12 @@ import {batch} from 'react-redux';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
 
 export type InitialStateType = {
-    [key: string]: UpdateTaskModelType[]
+    [key: string]: TaskType[]
 }
 
+const initialState = {
+
+}
 
 export const taskReducer = (state: InitialStateType = {}, action: TaskActionsType) => {
     switch (action.type) {
@@ -73,7 +76,7 @@ export const fetchTasks = (todolistId: string) => async (dispatch: Dispatch) => 
 export const deleteTask = (todolistId: string, taskId: string) => async (dispatch: Dispatch) => {
     dispatch(appActions.statusChangedAC('loading'))
     try {
-        const {data} = await  todolistsApi.deleteTodolist(todolistId)
+        const {data} = await  todolistsApi.deleteTask(todolistId, taskId)
         if (data.resultCode === ResultCodesEnum.Success) {
            batch( () => {
                dispatch(taskActions.deletedTask(todolistId, taskId))

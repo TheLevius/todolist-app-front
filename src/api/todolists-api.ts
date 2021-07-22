@@ -99,19 +99,22 @@ export type GetTasksType = {
 }
 
 export type TaskType = {
-    description: string;
-    title: string;
-    status: TaskStatusesType;
-    priority: TaskPrioritiesType;
-    startDate: string;
-    deadline: string;
     id: string;
     todoListId: string;
+    title: string;
+    description: string;
+    startDate: string;
+    deadline: string;
+    status: TaskStatusesType;
+    priority: TaskPrioritiesType;
+    completed: boolean;
     order: number;
     addedDate: string;
 }
 
 export type UpdateTaskModelType = {
+    id: string;
+    todoListId: string;
     title: string;
     description: string;
     startDate: string;
@@ -119,10 +122,7 @@ export type UpdateTaskModelType = {
     status: TaskStatusesType;
     priority: TaskPrioritiesType;
     completed: boolean
-    id: string
-    todoListId: string
-    order: number
-    addedDate: string
+
 }
 
 export enum TaskStatusesType {

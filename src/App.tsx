@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import 'antd/dist/antd.css';
 import './App.css';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,12 +8,12 @@ import {initializeAppTC, RequestStatusType} from './redux/app-reducer';
 import Row from 'antd/lib/grid/row';
 import Col from 'antd/lib/grid/col';
 import Layout, {Content, Footer, Header} from 'antd/lib/layout/layout';
-import {Button, message, Space, Spin} from 'antd';
+import {message, Space, Spin} from 'antd';
 import Breadcrumb from 'antd/lib/breadcrumb';
-import Card from 'antd/lib/card';
-import Input from 'antd/lib/input';
 import {Todolist} from './components/Todolist/Todolist';
 import {AddItemForm} from './components/AddItemForm/AddItemForm';
+import {TodolistDomainType} from './redux/todolist-reducer';
+import {TodolistList} from './components/TodolistList/TodolistList';
 
 
 export const App = () => {
@@ -21,6 +21,7 @@ export const App = () => {
     const isInitialized = useSelector<AppStateType, boolean>(state => state.app.isInitialized);
     const status = useSelector<AppStateType, RequestStatusType>(state => state.app.status);
     const error = useSelector<AppStateType, string | null>(state => state.app.error);
+    const todolists = useSelector<AppStateType, Array<TodolistDomainType>>(state => state.todolist)
 
     const initNotification = 'initializeNotificatoin';
     const initializationMessage = useCallback((status: string) => {
@@ -40,7 +41,7 @@ export const App = () => {
 
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!isInitialized) {
             console.log(`initialization requested, status: ${isInitialized}`)
             dispatch(initializeAppTC())
@@ -48,7 +49,7 @@ export const App = () => {
     }, [dispatch, isInitialized])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         if (status !== 'idle') {
             console.log('status: ', status)
             initializationMessage(status)
@@ -88,15 +89,12 @@ export const App = () => {
                     <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-background" style={{flexDirection: 'column', maxWidth: '1200px'}}>
-                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', maxWidth: 'calc(25% - 16px)', margin: '8px'}}>
+                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '8px'}}>
                         <AddItemForm addItem={addTodolist} />
                     </div>
-                    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start'}}>
-                        <Todolist/>
-                        <Todolist/>
-                        <Todolist/>
-                        <Todolist/>
-                        <Todolist/>
+                    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start', width: '100%'}}>
+                        <TodolistList />
+
                     </div>
                 </div>
             </Content>

@@ -1,4 +1,4 @@
-import {authAPI, ResultCodesEnum, todolistsApi, TodolistType} from '../api/todolists-api';
+import {ResultCodesEnum, todolistsApi, TodolistType} from '../api/todolists-api';
 import {appActions, RequestStatusType} from './app-reducer';
 import {Dispatch} from 'redux';
 import {batch} from 'react-redux';
@@ -9,7 +9,7 @@ const initialState:  TodolistDomainType[] = [];
 export const todolistReducer = (state: TodolistDomainType[] = initialState, action: TodolistActionsType) => {
     switch (action.type) {
         case 'TODOLIST/ADDED_TODOLIST': {
-            return([{...action.payload, filter: 'all', entityStatus: 'idle'},...state])
+            return([{...action.payload, filter: 'all', entityStatus: 'idle'}, ...state])
         }
         case 'TODOLIST/DELETED_TODOLIST': {
             return(state.filter(tl => tl.id !== action.payload.todolistId))
@@ -108,6 +108,7 @@ export const changeTodolistTitle = (todolistId: string, title: string) => async 
         netWorkErrorHandle(error, dispatch)
     }
 }
+
 
 export type FilterValuesType = 'all' | 'active' |'completed';
 export type TodolistDomainType = TodolistType & {filter: FilterValuesType, entityStatus: RequestStatusType}
