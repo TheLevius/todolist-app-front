@@ -10,9 +10,7 @@ import Col from 'antd/lib/grid/col';
 import Layout, {Content, Footer, Header} from 'antd/lib/layout/layout';
 import {message, Space, Spin} from 'antd';
 import Breadcrumb from 'antd/lib/breadcrumb';
-import {Todolist} from './components/Todolist/Todolist';
 import {AddItemForm} from './components/AddItemForm/AddItemForm';
-import {TodolistDomainType} from './redux/todolist-reducer';
 import {TodolistList} from './components/TodolistList/TodolistList';
 
 
@@ -21,7 +19,6 @@ export const App = () => {
     const isInitialized = useSelector<AppStateType, boolean>(state => state.app.isInitialized);
     const status = useSelector<AppStateType, RequestStatusType>(state => state.app.status);
     const error = useSelector<AppStateType, string | null>(state => state.app.error);
-    const todolists = useSelector<AppStateType, Array<TodolistDomainType>>(state => state.todolist)
 
     const initNotification = 'initializeNotificatoin';
     const initializationMessage = useCallback((status: string) => {

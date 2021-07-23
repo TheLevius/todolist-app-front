@@ -21,7 +21,7 @@ export const EditableSpan: FC<{
     onTitleChange: (title: string) => void
 }> = ({onTitleChange, title = 'empty', strong = false, bordered = true, style, ...props}) => {
     const [isEditMode, setIsEditMode] = useState<boolean>(false)
-    const [content, setContent] = useState<string>('testContent')
+    const [content, setContent] = useState<string>(title || 'undefined')
 
     const onButtonClickHandle = (e: MouseEvent<HTMLElement>) => {
         setIsEditMode(prev => !prev)

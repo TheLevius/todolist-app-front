@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState, MouseEvent} from 'react';
+import React, {FC, MouseEvent} from 'react';
 import Checkbox, {CheckboxChangeEvent} from 'antd/lib/checkbox';
 import {EditableSpan} from '../../common/EditableSpan/EditableSpan';
 import {Button} from 'antd';
@@ -22,7 +22,7 @@ export const Task: FC<{task: TaskType}> = ({task}) => {
         dispatch(updateTask(task.todoListId, task.id, newTaskModel));
     }
 
-    const onRemoveTaskClick = (e: MouseEvent<HTMLElement>) => {
+    const onRemoveTaskClick = () => {
         dispatch(deleteTask(task.todoListId, task.id))
     }
 

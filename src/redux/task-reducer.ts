@@ -8,13 +8,13 @@ export type InitialStateType = {
     [key: string]: TaskType[]
 }
 
-const initialState = {
-
+const initialState: InitialStateType = {
 }
 
-export const taskReducer = (state: InitialStateType = {}, action: TaskActionsType) => {
+export const taskReducer = (state: InitialStateType = initialState, action: TaskActionsType) => {
     switch (action.type) {
         case 'TASKS/SET_TASKS': {
+
             return({
                 ...state,
                 [action.payload.todolistId]: [...action.payload.tasks]
@@ -64,6 +64,7 @@ export const fetchTasks = (todolistId: string) => async (dispatch: Dispatch) => 
     dispatch(appActions.statusChangedAC('loading'))
     try {
         const {data} = await todolistsApi.getTasks(todolistId)
+        console.log('tasks: ', data.items)
         batch(() => {
             dispatch(taskActions.setTasks(todolistId, data.items))
             dispatch(appActions.statusChangedAC('succeeded'))

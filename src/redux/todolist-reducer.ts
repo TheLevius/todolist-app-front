@@ -24,7 +24,10 @@ export const todolistReducer = (state: TodolistDomainType[] = initialState, acti
             return(state.map( tl => (tl.id === action.payload.todolistId ? {...tl, entityStatus: action.payload.entityStatus} : tl) ))
         }
         case 'TODOLIST/SETTLED_TODOLISTS': {
-            return(state.map( tl => ({...tl, filter: 'all', entityStatus: 'idle'} as TodolistDomainType) ))
+            return([
+                ...state,
+                ...action.payload.todolists.map( tl => ({...tl, filter: 'all', entityStatus: 'idle'} as TodolistDomainType) )
+            ])
         }
         default: return state;
     }
@@ -44,17 +47,19 @@ export const todolistActions = {
     setTodolist: (todolists: TodolistType[]) => ({type: 'TODOLIST/SETTLED_TODOLISTS', payload: {todolists}} as const)
 }
 
-export const fetchTodolistsTC = () => async (disptach: Dispatch) => {
-    disptach(appActions.statusChangedAC('loading'))
+export const fetchTodolistsTC = () => async (dispatch: Dispatch) => {
+    dispatch(appActions.statusChangedAC('loading'))
     try {
+
         const {data} = await todolistsApi.getTodolists()
+        console.log('after await', data)
         batch(() => {
-            todolistActions.setTodolist(data)
-            disptach(appActions.statusChangedAC('succeeded'))
+            dispatch(todolistActions.setTodolist(data))
+            dispatch(appActions.statusChangedAC('succeeded'))
         })
     }
     catch(error) {
-        netWorkErrorHandle(error, disptach)
+        netWorkErrorHandle(error, dispatch)
     }
 }
 
@@ -62,6 +67,7 @@ export const addTodolist = (title: string) => async (dispatch: Dispatch) => {
     dispatch(appActions.statusChangedAC('loading'))
     try {
         const {data} = await todolistsApi.createTodolist(title)
+        debugger
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(() => {
                 todolistActions.addedTodolist(data.data.item)

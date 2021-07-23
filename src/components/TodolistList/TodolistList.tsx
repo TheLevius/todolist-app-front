@@ -8,21 +8,18 @@ export const TodolistList: FC<{}> = ({...props}) => {
 
     const dispatch = useDispatch()
     const todolistList = useSelector<AppStateType, TodolistDomainType[]>(state => state.todolist)
-
+    console.log('todolistList: ', todolistList)
     useEffect(()=>{
         dispatch(fetchTodolistsTC())
 
     }, [dispatch]);
 
-
-    const todolistComponents = todolistList.map(td => (
-        <Todolist key={td.id} td={td} />
-    ))
-
     return(
-        <div>
-            {todolistComponents}
-        </div>
+        <>
+            {todolistList.map(td => (
+                <Todolist key={td.id} td={td} />
+            ))}
+        </>
     )
 }
 

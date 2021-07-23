@@ -16,14 +16,14 @@ export const Todolist: FC<{td: TodolistDomainType}> = ({td}) => {
 
     const dispatch = useDispatch();
     const taskList = useSelector<AppStateType, TaskType[]>(state => (state.task[td.id]))
-
-    const taskComponents = taskList.map(t => (<Task key={t.id} task={t} />))
+    console.log('taskList: ', taskList)
+    const taskComponents = taskList !== undefined ? taskList.map(t => (<Task key={t.id} task={t} />)) : <>Empty</>;
 
     useEffect(() => {
-
+        console.log('useEffect from todolist')
         dispatch(fetchTasks(td.id))
 
-    }, [dispatch])
+    }, [dispatch, td.id])
 
     const addTaskHandle = (title: string) => {
         console.log(title)
