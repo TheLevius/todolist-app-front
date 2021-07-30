@@ -58,6 +58,7 @@ export const Todolist: FC<{td: TodolistDomainType}> = ({td}) => {
 
         }} style={{
             display: 'flex',
+            minWidth: 'calc(25% - 16px)',
             flexDirection: 'column',
             margin: '8px',
             overflow: 'hidden'

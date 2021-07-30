@@ -3,15 +3,10 @@ import 'antd/dist/antd.css';
 import './App.css';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppStateType} from './redux/store';
-import fastifyLogo from './assets/img/svg/fistify-logo.svg';
 import {initializeAppTC, RequestStatusType} from './redux/app-reducer';
-import Layout, {Content, Footer, Header} from 'antd/lib/layout/layout';
 import {message, Space, Spin} from 'antd';
-import Breadcrumb from 'antd/lib/breadcrumb';
-import {AddItemForm} from './components/AddItemForm/AddItemForm';
-import {TodolistList} from './components/TodolistList/TodolistList';
-import {addTodolist} from './redux/todolist-reducer';
-
+import {TodolistsPage} from './components/TodolistsPage/TodolistsPage';
+import {Switch, Route, Redirect} from 'react-router-dom';
 
 export const App = () => {
     const dispatch = useDispatch();
@@ -32,10 +27,6 @@ export const App = () => {
             }
 
     }, [error]);
-
-    const addTodolistHandle = (title: string) => {
-        dispatch(addTodolist(title))
-    }
 
     useEffect(() => {
         if (!isInitialized) {
@@ -65,33 +56,13 @@ export const App = () => {
     }
 
     return (
-
-        <Layout className={'layout'}>
-            <Header style={{display: 'flex', backgroundColor: '#6d8aa8'}}>
-                <img src={fastifyLogo} alt='fastify logotype' style={{maxWidth: '32px', marginRight: '8px'}}/>
-                <h3 style={{color: '#fff'}}>
-                    Todolist Application
-                </h3>
-            </Header>
-            <Content className={'site-layout-content'} style={{width: '100%',padding: '0 50px', margin: '0 auto'}}>
-                <Breadcrumb style={{margin: '16px 0'}}>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
-                    <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
-                <div className="site-layout-background" style={{flexDirection: 'column', maxWidth: '1200px'}}>
-                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '8px'}}>
-                        <AddItemForm addItem={addTodolistHandle} />
-                    </div>
-                    <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start', width: '100%'}}>
-                        <TodolistList />
-                    </div>
-                </div>
-            </Content>
-
-            <Footer style={{textAlign: 'center'}}>
-                Todolist Application ©2021 Created by Nikita Levitski
-            </Footer>
-        </Layout>
+        <>
+            <Switch>
+                <Route path={'/todolists'} render={()=><TodolistsPage/>}/>
+                <Route path={'/'} exact render={()=><Redirect to={'/todolists'} />} />
+                <Route path={'*'} render={()=><h1>404 Page not found</h1>} />
+            </Switch>
+        </>
     );
 }
 
