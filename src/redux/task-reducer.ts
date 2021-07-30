@@ -3,6 +3,7 @@ import {Dispatch} from 'redux';
 import {appActions} from './app-reducer';
 import {batch} from 'react-redux';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
+import {AppStateType} from './store';
 
 export type InitialStateType = {
     [key: string]: TaskType[]
@@ -61,13 +62,12 @@ export const taskActions = {
 
 
 export const fetchTasks = (todolistId: string) => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'))
+
     try {
         const {data} = await todolistsApi.getTasks(todolistId)
-        console.log('tasks: ', data.items)
         batch(() => {
             dispatch(taskActions.setTasks(todolistId, data.items))
-            dispatch(appActions.statusChangedAC('succeeded'))
+
         })
     }
     catch(error) {
@@ -75,13 +75,13 @@ export const fetchTasks = (todolistId: string) => async (dispatch: Dispatch) => 
     }
 }
 export const deleteTask = (todolistId: string, taskId: string) => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'))
+
     try {
-        const {data} = await  todolistsApi.deleteTask(todolistId, taskId)
+        const {data} = await todolistsApi.deleteTask(todolistId, taskId)
         if (data.resultCode === ResultCodesEnum.Success) {
            batch( () => {
                dispatch(taskActions.deletedTask(todolistId, taskId))
-               dispatch(appActions.statusChangedAC('succeeded'))
+
            })
         } else {
             appErrorHandle(data, dispatch)
@@ -92,13 +92,13 @@ export const deleteTask = (todolistId: string, taskId: string) => async (dispatc
     }
 }
 export const addTask = (todolistId: string, title: string) => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'))
+
     try {
         const {data} = await todolistsApi.createTask(todolistId, title)
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(() => {
                 dispatch(taskActions.addedTask(data.data.item))
-                dispatch(appActions.statusChangedAC('succeeded'))
+
             })
         } else {
             appErrorHandle(data, dispatch)
@@ -108,8 +108,8 @@ export const addTask = (todolistId: string, title: string) => async (dispatch: D
         netWorkErrorHandle(error, dispatch)
     }
 }
-export const updateTask = (todolistId: string, taskId: string, model: UpdateTaskModelType) => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'))
+export const updateTask = (todolistId: string, taskId: string, model: UpdateTaskModelType) => async (dispatch: Dispatch, getState: () => AppStateType) => {
+    let task = getState().task[todolistId].filter(t => t.id === taskId)[0]
     try {
         const {data} = await todolistsApi.updateTask(todolistId, taskId, model)
         if (data.resultCode === ResultCodesEnum.Success) {
@@ -119,6 +119,9 @@ export const updateTask = (todolistId: string, taskId: string, model: UpdateTask
         }
     }
     catch(error) {
+        if (task) {
+            dispatch(taskActions.updatedTask({...task, ...model}))
+        }
         netWorkErrorHandle(error, dispatch)
     }
 }

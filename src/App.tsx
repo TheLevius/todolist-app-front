@@ -5,13 +5,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppStateType} from './redux/store';
 import fastifyLogo from './assets/img/svg/fistify-logo.svg';
 import {initializeAppTC, RequestStatusType} from './redux/app-reducer';
-import Row from 'antd/lib/grid/row';
-import Col from 'antd/lib/grid/col';
 import Layout, {Content, Footer, Header} from 'antd/lib/layout/layout';
 import {message, Space, Spin} from 'antd';
 import Breadcrumb from 'antd/lib/breadcrumb';
 import {AddItemForm} from './components/AddItemForm/AddItemForm';
 import {TodolistList} from './components/TodolistList/TodolistList';
+import {addTodolist} from './redux/todolist-reducer';
 
 
 export const App = () => {
@@ -26,16 +25,16 @@ export const App = () => {
                 message.loading({content: 'initializing!', key: initNotification, duration: 0, className: 'custom-class', style: {marginTop: '20vh'}})
             } else if (status === 'succeeded') {
                 message.success({content: 'App Initialized!', key: initNotification, duration: 1, className: 'custom-class', style: {marginTop: '20vh'}})
-            } else if (status === 'failed') {
-                message.warning({content: 'App Initialized without authorization!', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
-            } else if (error?.length) {
+            } else if (error?.length && status === 'failed') {
                 message.error({content: error, key: initNotification, duration: 5, className: 'custom-class', style: {marginTop: '20vh'}})
+            } else if (status === 'failed') {
+                message.warning({content: !!error ? error : 'Some app error', key: initNotification, duration: 3, className: 'custom-class', style: {marginTop: '20vh'}})
             }
 
     }, [error]);
 
-    const addTodolist = (title: string) => {
-
+    const addTodolistHandle = (title: string) => {
+        dispatch(addTodolist(title))
     }
 
     useEffect(() => {
@@ -68,30 +67,23 @@ export const App = () => {
     return (
 
         <Layout className={'layout'}>
-            <Header style={{backgroundColor: '#6d8aa8'}}>
-                <Row justify={'start'}>
-                    <Col span={1}>
-                        <img src={fastifyLogo} alt='fastify logotype' style={{maxWidth: '32px'}}/>
-                    </Col>
-                    <Col span={6}>
-                        <h3 style={{color: '#fff'}}>
-                            Todolist Application
-                        </h3>
-                    </Col>
-                </Row>
+            <Header style={{display: 'flex', backgroundColor: '#6d8aa8'}}>
+                <img src={fastifyLogo} alt='fastify logotype' style={{maxWidth: '32px', marginRight: '8px'}}/>
+                <h3 style={{color: '#fff'}}>
+                    Todolist Application
+                </h3>
             </Header>
-            <Content className={'site-layout-content'} style={{padding: '0 50px', margin: '0 auto'}}>
+            <Content className={'site-layout-content'} style={{width: '100%',padding: '0 50px', margin: '0 auto'}}>
                 <Breadcrumb style={{margin: '16px 0'}}>
                     <Breadcrumb.Item>Home</Breadcrumb.Item>
                     <Breadcrumb.Item>App</Breadcrumb.Item>
                 </Breadcrumb>
                 <div className="site-layout-background" style={{flexDirection: 'column', maxWidth: '1200px'}}>
                     <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', margin: '8px'}}>
-                        <AddItemForm addItem={addTodolist} />
+                        <AddItemForm addItem={addTodolistHandle} />
                     </div>
                     <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'start', width: '100%'}}>
                         <TodolistList />
-
                     </div>
                 </div>
             </Content>

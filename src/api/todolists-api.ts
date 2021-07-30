@@ -30,8 +30,7 @@ export const todolistsApi = {
 
     },
     createTodolist(title: string) {
-        return incu.post<ResType<{item: TodolistType}>>(`todo-lists`, {title});
-
+        return incu.post<ResType<{item: TodolistType}>>(`todo-lists`, {title})
     },
     deleteTodolist(todolistId: string) {
         return incu.delete<ResType>(`todo-lists/${todolistId}`);

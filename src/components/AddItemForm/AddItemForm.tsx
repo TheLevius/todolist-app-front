@@ -1,6 +1,6 @@
-import React, {ChangeEvent, CSSProperties, FC, KeyboardEvent, FocusEvent, useState} from 'react';
+import React, {ChangeEvent, FC, FocusEvent, KeyboardEvent, useState} from 'react';
 import {Button} from 'antd';
-import {EnterOutlined, PlusCircleFilled} from '@ant-design/icons/lib';
+import {PlusCircleFilled} from '@ant-design/icons/lib';
 import Input from 'antd/lib/input';
 
 export const AddItemForm: FC<{bordered?: boolean, addItem: (title: string) => void}> = ({bordered = true, addItem, ...props}) => {
@@ -24,7 +24,7 @@ export const AddItemForm: FC<{bordered?: boolean, addItem: (title: string) => vo
     }
 
     return(
-        <>
+        <div style={{display: 'flex', width: '100%'}}>
             <Input onKeyPress={onSubmitHandle}
                    onBlur={onSubmitHandle}
                    placeholder={'Add task'}
@@ -37,6 +37,6 @@ export const AddItemForm: FC<{bordered?: boolean, addItem: (title: string) => vo
                 icon={<PlusCircleFilled style={{color: '#2999ff', fontSize: '18px'}}/>}
                 shape='circle'
             />
-        </>
+        </div>
     )
 }

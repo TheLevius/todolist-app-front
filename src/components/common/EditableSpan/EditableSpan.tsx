@@ -37,7 +37,9 @@ export const EditableSpan: FC<{
     }
 
     const onContentChangeHandle = (e: ChangeEvent<HTMLInputElement>) => {
-        setContent(e.target.value)
+        if (content !== e.target.value && content !== '') {
+            setContent(e.target.value)
+        }
     }
 
     if(isEditMode) {
@@ -55,7 +57,7 @@ export const EditableSpan: FC<{
     }
     return(
         <Button type='text' block onClick={onButtonClickHandle} style={{...style}}>
-            <Text strong={strong}>
+            <Text strong={strong} style={{width: '100%', textOverflow: 'ellipsis', overflow: 'hidden'}}>
                 {content}
             </Text>
         </Button>
