@@ -7,6 +7,8 @@ import {initializeAppTC, RequestStatusType} from './redux/app-reducer';
 import {message, Space, Spin} from 'antd';
 import {TodolistsPage} from './components/TodolistsPage/TodolistsPage';
 import {Switch, Route, Redirect} from 'react-router-dom';
+import {LoginPage} from './components/LoginPage/LoginPage';
+import {RegistrationPage} from './components/RegistrationPage/RegistrationPage';
 
 export const App = () => {
     const dispatch = useDispatch();
@@ -58,8 +60,15 @@ export const App = () => {
     return (
         <>
             <Switch>
-                <Route path={'/todolists'} render={()=><TodolistsPage/>}/>
-                <Route path={'/'} exact render={()=><Redirect to={'/todolists'} />} />
+                <Route path={'/login'} render={()=><LoginPage /> } />
+                <Route path={'/registration'} render={()=><RegistrationPage /> } />
+                <Route path={'/'} exact render={ () => {
+                    if (!isInitialized) {
+                        return(<Redirect to={'/login'}/>)
+                    }
+                    return <Redirect to={'/todolists'} />
+                }} />
+                <Route path={'/todolists'} render={()=><TodolistsPage/>} />
                 <Route path={'*'} render={()=><h1>404 Page not found</h1>} />
             </Switch>
         </>

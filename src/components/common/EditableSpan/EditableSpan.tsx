@@ -31,15 +31,18 @@ export const EditableSpan: FC<{
         | FocusEvent<HTMLInputElement>) => {
         if ((event as KeyboardEvent<HTMLInputElement>).key === 'Enter'
             || (event as FocusEvent<HTMLInputElement>).type === 'blur' ) {
-            onTitleChange(content);
-            setIsEditMode(prev => !prev);
+            if (content !== '') {
+                onTitleChange(content);
+                setIsEditMode(prev => !prev);
+            } else {
+                setContent(title || 'empty')
+                setIsEditMode(prev => !prev)
+            }
         }
     }
 
     const onContentChangeHandle = (e: ChangeEvent<HTMLInputElement>) => {
-        if (content !== e.target.value && content !== '') {
-            setContent(e.target.value)
-        }
+        setContent(e.target.value)
     }
 
     if(isEditMode) {

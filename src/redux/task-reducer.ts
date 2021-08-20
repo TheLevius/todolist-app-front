@@ -1,6 +1,5 @@
 import {ResultCodesEnum, TaskType, todolistsApi, UpdateTaskModelType} from '../api/todolists-api';
 import {Dispatch} from 'redux';
-import {appActions} from './app-reducer';
 import {batch} from 'react-redux';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
 import {AppStateType} from './store';
@@ -9,13 +8,11 @@ export type InitialStateType = {
     [key: string]: TaskType[]
 }
 
-const initialState: InitialStateType = {
-}
+const initialState: InitialStateType = {}
 
-export const taskReducer = (state: InitialStateType = initialState, action: TaskActionsType) => {
+export const taskReducer = (state: InitialStateType = initialState, action: TaskActionsType): InitialStateType => {
     switch (action.type) {
         case 'TASKS/SET_TASKS': {
-
             return({
                 ...state,
                 [action.payload.todolistId]: [...action.payload.tasks]
@@ -55,7 +52,7 @@ type TaskActionsType = ReturnType<InferActionsType<typeof taskActions>>
 
 export const taskActions = {
     setTasks: (todolistId: string, tasks: TaskType[]) => ({type: 'TASKS/SET_TASKS', payload: {todolistId, tasks}} as const),
-    addedTask: (task: TaskType) => ({type: 'TASKS/ADDED_TASK', payload: {task}} as const),
+    addedTask: (task: TaskType) => ({type: 'TASKS/ADDED_TASK', payload: {task: task}} as const),
     deletedTask: (todolistId: string, taskId: string) => ({type: 'TASKS/DELETED_TASK', payload: {todolistId, taskId}} as const),
     updatedTask: (model: UpdateTaskModelType) => ({type: 'TASKS/UPDATED_TASK', payload: {model}} as const)
 }
@@ -109,7 +106,7 @@ export const addTask = (todolistId: string, title: string) => async (dispatch: D
     }
 }
 export const updateTask = (todolistId: string, taskId: string, model: UpdateTaskModelType) => async (dispatch: Dispatch, getState: () => AppStateType) => {
-    let task = getState().task[todolistId].filter(t => t.id === taskId)[0]
+    let task = getState().tasks[todolistId].filter(t => t.id === taskId)[0]
     try {
         const {data} = await todolistsApi.updateTask(todolistId, taskId, model)
         if (data.resultCode === ResultCodesEnum.Success) {

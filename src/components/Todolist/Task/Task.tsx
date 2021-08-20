@@ -7,7 +7,7 @@ import {TaskStatusesType, TaskType, UpdateTaskModelType} from '../../../api/todo
 import {useDispatch} from 'react-redux';
 import {deleteTask, updateTask} from '../../../redux/task-reducer';
 
-export const Task: FC<{task: TaskType}> = ({task}) => {
+export const Task: FC<{task: TaskType}> = React.memo(({task}) => {
 
     const dispatch = useDispatch()
 
@@ -39,4 +39,4 @@ export const Task: FC<{task: TaskType}> = ({task}) => {
             />
         </div>
     )
-}
+})

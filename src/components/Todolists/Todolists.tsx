@@ -1,19 +1,30 @@
 import React, {FC} from 'react';
 import {Todolist} from '../Todolist/Todolist';
-import {useSelector} from 'react-redux';
-import {AppStateType} from '../../redux/store';
 import {TodolistDomainType} from '../../redux/todolist-reducer';
-import {todoListsSelector} from '../../redux/selectors';
+import {Space, Spin} from "antd";
+import {useSelector} from "react-redux";
+import {AppStateType} from "../../redux/store";
 
 
+export const Todolists: FC = () => {
 
-export const Todolists: FC<{}> = (props) => {
+    const todolists = useSelector<AppStateType, TodolistDomainType[] | null>(state => {
+        return(!!state.todolist ? state.todolist : null)
+    })
 
-    const todolistList = useSelector<AppStateType, TodolistDomainType[]>(state => todoListsSelector(state))
+    if(!todolists) {
+        console.log('spinners')
+        return(
+            <Space size='large'>
+                <Spin size='large' tip='Initialize...'/>
+            </Space>
+        )
+    }
 
+    console.log('todolist mapping')
     return(
         <>
-            {todolistList?.map(td => (<Todolist key={td.id} td={td}/>))}
+            {todolists.map(td => (<Todolist key={td.id} title={td.title} id={td.id} filter={td.filter}/>))}
         </>
     )
 }

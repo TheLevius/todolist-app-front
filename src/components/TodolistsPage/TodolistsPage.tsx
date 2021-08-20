@@ -8,10 +8,9 @@ import {AddItemForm} from '../AddItemForm/AddItemForm';
 import {Card} from 'antd';
 import {Todolists} from '../Todolists/Todolists';
 
-export const TodolistsPage: FC<{}> = ({...props}) => {
+export const TodolistsPage: FC<{}> = (props) => {
 
     const dispatch = useDispatch()
-
 
     const addTodolistHandle = (title: string) => {
         dispatch(addTodolist(title))
@@ -22,8 +21,10 @@ export const TodolistsPage: FC<{}> = ({...props}) => {
 
     }, [dispatch]);
 
+    console.log('TodolistsPage')
+
     return(
-        <Layout className={'layout'} style={{minHeight: ''}}>
+        <Layout className={'layout'} style={{minHeight: '100vh'}}>
             <Header style={{display: 'flex', backgroundColor: '#6d8aa8'}}>
                 <img src={fastifyLogo} alt='fastify logotype' style={{maxWidth: '32px', marginRight: '8px'}}/>
                 <h3 style={{color: '#fff'}}>

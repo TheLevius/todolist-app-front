@@ -5,6 +5,7 @@ import Input from 'antd/lib/input';
 
 export const AddItemForm: FC<{bordered?: boolean, addItem: (title: string) => void}> = ({bordered = true, addItem, ...props}) => {
     const [inputValue, setInputValue] = useState<string>('')
+
     const onChangeHandle = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value)
     }

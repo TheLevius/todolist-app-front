@@ -4,6 +4,7 @@ import {Input} from 'antd';
 export const UseInput: FC<{}> = (props) => {
     return(
         <>
+            <Input />
         </>
     )
 }

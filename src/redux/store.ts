@@ -1,15 +1,16 @@
-import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
+import {combineReducers, compose} from 'redux';
 import thunk from 'redux-thunk';
 import {appReducer} from './app-reducer';
 import {authReducer} from './auth-reducer';
 import { taskReducer } from './task-reducer';
 import {todolistReducer} from './todolist-reducer';
+import {configureStore} from "@reduxjs/toolkit";
 
 let rootReducer = combineReducers({
     app: appReducer,
     auth: authReducer,
     todolist: todolistReducer,
-    task: taskReducer
+    tasks: taskReducer
 })
 
 type RootReducerType = typeof rootReducer;
@@ -21,10 +22,13 @@ declare global {
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
     }
 }
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-
-export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+export const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(thunk)
+})
+//export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 
 //@ts-ignore

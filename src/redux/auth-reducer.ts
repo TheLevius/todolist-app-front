@@ -3,26 +3,41 @@ import {Dispatch} from 'redux';
 import {batch} from 'react-redux';
 import {appActions} from './app-reducer';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState = {
     isLoggedIn: false
 }
 
-export const authReducer = (state: InitialStateType = initialState, action: AuthActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'AUTH/IS_LOGGED_IN_STATUS':
-            return ({
-                ...state,
-                ...action.payload
-            })
-        default: return state
+const slice = createSlice({
+    name: 'auth',
+    initialState: initialState,
+    reducers: {
+        isLoggedInStatusChangedAC(state, action: PayloadAction<{value: boolean}>) {
+           state.isLoggedIn = action.payload.value;
+        }
     }
-}
+});
 
-export const authActions = {
-    isLoggedInStatusChangedAC: (status: boolean) => ({type: 'AUTH/IS_LOGGED_IN_STATUS', payload: {status}}),
-}
-type AuthActionsType = ReturnType<typeof  authActions.isLoggedInStatusChangedAC>
+export const authReducer = slice.reducer;
+
+export const {isLoggedInStatusChangedAC} = slice.actions;
+
+// (state: InitialStateType = initialState, action: AuthActionsType): InitialStateType => {
+//     switch (action.type) {
+//         case 'AUTH/IS_LOGGED_IN_STATUS':
+//             return ({
+//                 ...state,
+//                 ...action.payload
+//             })
+//         default: return state
+//     }
+// }
+
+// export const authActions = {
+//     isLoggedInStatusChangedAC: (status: boolean) => ({type: 'AUTH/IS_LOGGED_IN_STATUS', payload: {status}}),
+// }
+// type AuthActionsType = ReturnType<typeof  authActions.isLoggedInStatusChangedAC>
 
 export const loginTC = (loginData: LoginReqParamsType) => async (dispatch: Dispatch) => {
     dispatch(appActions.statusChangedAC('loading'))
@@ -30,7 +45,7 @@ export const loginTC = (loginData: LoginReqParamsType) => async (dispatch: Dispa
         const {data} = await authAPI.login(loginData)
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(()=>{
-                dispatch(authActions.isLoggedInStatusChangedAC(true));
+                dispatch(isLoggedInStatusChangedAC({value: true}));
                 dispatch(appActions.statusChangedAC('succeeded'));
             })
         } else {
@@ -39,7 +54,7 @@ export const loginTC = (loginData: LoginReqParamsType) => async (dispatch: Dispa
     }
     catch(error) {
         netWorkErrorHandle(error, dispatch);
-        dispatch(authActions.isLoggedInStatusChangedAC(false))
+        dispatch(isLoggedInStatusChangedAC({value: false}))
     }
 }
 export const logoutTC = () => async (dispatch: Dispatch) => {
@@ -48,7 +63,7 @@ export const logoutTC = () => async (dispatch: Dispatch) => {
         const {data} = await authAPI.logout();
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(() => {
-                dispatch(authActions.isLoggedInStatusChangedAC(false));
+                dispatch(isLoggedInStatusChangedAC({value: true}));
                 dispatch(appActions.statusChangedAC('succeeded'));
             })
         } else {
@@ -60,6 +75,6 @@ export const logoutTC = () => async (dispatch: Dispatch) => {
     }
 }
 
-export type InitialStateType = {
-    isLoggedIn: boolean;
-}
+// export type InitialStateType = {
+//     isLoggedIn: boolean;
+// }
