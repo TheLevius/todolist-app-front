@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/todolist-app-front/static/css/main.477e8c1d.chunk.css",
+    "main.js": "/todolist-app-front/static/js/main.7f230b60.chunk.js",
+    "main.js.map": "/todolist-app-front/static/js/main.7f230b60.chunk.js.map",
+    "runtime-main.js": "/todolist-app-front/static/js/runtime-main.cbcd8589.js",
+    "runtime-main.js.map": "/todolist-app-front/static/js/runtime-main.cbcd8589.js.map",
+    "static/css/2.af9592cd.chunk.css": "/todolist-app-front/static/css/2.af9592cd.chunk.css",
+    "static/js/2.03f124a0.chunk.js": "/todolist-app-front/static/js/2.03f124a0.chunk.js",
+    "static/js/2.03f124a0.chunk.js.map": "/todolist-app-front/static/js/2.03f124a0.chunk.js.map",
+    "index.html": "/todolist-app-front/index.html",
+    "static/css/2.af9592cd.chunk.css.map": "/todolist-app-front/static/css/2.af9592cd.chunk.css.map",
+    "static/css/main.477e8c1d.chunk.css.map": "/todolist-app-front/static/css/main.477e8c1d.chunk.css.map",
+    "static/js/2.03f124a0.chunk.js.LICENSE.txt": "/todolist-app-front/static/js/2.03f124a0.chunk.js.LICENSE.txt",
+    "static/media/fistify-logo.7b04169f.svg": "/todolist-app-front/static/media/fistify-logo.7b04169f.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cbcd8589.js",
+    "static/css/2.af9592cd.chunk.css",
+    "static/js/2.03f124a0.chunk.js",
+    "static/css/main.477e8c1d.chunk.css",
+    "static/js/main.7f230b60.chunk.js"
+  ]
+}
