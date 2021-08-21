@@ -1,9 +1,9 @@
 import {authAPI, LoginReqParamsType, ResultCodesEnum} from '../api/todolists-api';
 import {Dispatch} from 'redux';
 import {batch} from 'react-redux';
-import {appActions} from './app-reducer';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {statusChangedAC} from "./app-reducer";
 
 const initialState = {
     isLoggedIn: false
@@ -40,13 +40,13 @@ export const {isLoggedInStatusChangedAC} = slice.actions;
 // type AuthActionsType = ReturnType<typeof  authActions.isLoggedInStatusChangedAC>
 
 export const loginTC = (loginData: LoginReqParamsType) => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'))
+    dispatch(statusChangedAC({status: 'loading'}))
     try {
         const {data} = await authAPI.login(loginData)
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(()=>{
                 dispatch(isLoggedInStatusChangedAC({value: true}));
-                dispatch(appActions.statusChangedAC('succeeded'));
+                dispatch(statusChangedAC({status: 'succeeded'}));
             })
         } else {
             appErrorHandle(data, dispatch)
@@ -58,13 +58,13 @@ export const loginTC = (loginData: LoginReqParamsType) => async (dispatch: Dispa
     }
 }
 export const logoutTC = () => async (dispatch: Dispatch) => {
-    dispatch(appActions.statusChangedAC('loading'));
+    dispatch(statusChangedAC({status: 'loading'}));
     try {
         const {data} = await authAPI.logout();
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(() => {
                 dispatch(isLoggedInStatusChangedAC({value: true}));
-                dispatch(appActions.statusChangedAC('succeeded'));
+                dispatch(statusChangedAC({status: 'succeeded'}));
             })
         } else {
             appErrorHandle(data, dispatch);

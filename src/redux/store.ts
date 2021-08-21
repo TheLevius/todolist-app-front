@@ -1,10 +1,10 @@
 import {combineReducers, compose} from 'redux';
 import thunk from 'redux-thunk';
-import {appReducer} from './app-reducer';
 import {authReducer} from './auth-reducer';
-import { taskReducer } from './task-reducer';
+import {taskReducer} from './task-reducer';
 import {todolistReducer} from './todolist-reducer';
 import {configureStore} from "@reduxjs/toolkit";
+import {appReducer} from "./app-reducer";
 
 let rootReducer = combineReducers({
     app: appReducer,

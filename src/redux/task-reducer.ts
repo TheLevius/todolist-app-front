@@ -3,6 +3,8 @@ import {Dispatch} from 'redux';
 import {batch} from 'react-redux';
 import {appErrorHandle, netWorkErrorHandle} from '../utils/error-utils';
 import {AppStateType} from './store';
+import {addedTodolist, deletedTodolist, setTodolists} from "./todolist-reducer";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export type InitialStateType = {
     [key: string]: TaskType[]
@@ -10,61 +12,51 @@ export type InitialStateType = {
 
 const initialState: InitialStateType = {}
 
-export const taskReducer = (state: InitialStateType = initialState, action: TaskActionsType): InitialStateType => {
-    switch (action.type) {
-        case 'TASKS/SET_TASKS': {
-            return({
-                ...state,
-                [action.payload.todolistId]: [...action.payload.tasks]
-            })
+const slice = createSlice({
+    name: 'tasks',
+    initialState: initialState,
+    reducers: {
+        setTasks: (state, action: PayloadAction<{todolistId: string, tasks: TaskType[]}>) => {
+            state[action.payload.todolistId].push(...action.payload.tasks)
+        },
+        addedTask: (state, action: PayloadAction <{task: TaskType}>) => {
+            state[action.payload.task.todoListId].unshift(action.payload.task)
+        },
+        deletedTask: (state, action: PayloadAction <{todolistId: string, taskId: string}>) => {
+            const index = state[action.payload.todolistId].findIndex(t => t.id === action.payload.taskId)
+            state[action.payload.todolistId].splice(index, 1);
+        },
+        updatedTask: (state, action: PayloadAction <{model: UpdateTaskModelType}>) => {
+            const index = state[action.payload.model.todoListId].findIndex(t => t.id === action.payload.model.todoListId);
+            state[action.payload.model.todoListId][index] = {
+                ...state[action.payload.model.todoListId][index],
+                ...action.payload.model
+            }
         }
-        case 'TASKS/ADDED_TASK': {
-            return({
-                ...state,
-                [action.payload.task.todoListId]: [...state[action.payload.task.todoListId], {...action.payload.task}]
-            })
-        }
-        case 'TASKS/DELETED_TASK': {
-            return({
-                ...state,
-                [action.payload.todolistId]: [
-                    ...state[action.payload.todolistId]
-                        .filter(t => t.id !== action.payload.taskId)
-                ]
-            })
-        }
-        case 'TASKS/UPDATED_TASK': {
-            return({
-                ...state,
-                [action.payload.model.todoListId]: [
-                    ...state[action.payload.model.todoListId]
-                        .map(t => t.id === action.payload.model.id
-                            ? {...t, ...action.payload.model}
-                            : t)
-                ]
-            })
-        }
-        default: return state
+    },
+    extraReducers: (builder) => {
+        builder.addCase(addedTodolist, (state, action) => {
+            state[action.payload.todolist.id] = []
+        });
+        builder.addCase(deletedTodolist, (state, action) => {
+            delete state[action.payload.todolistId]
+        });
+        builder.addCase(setTodolists, (state, action) => {
+            action.payload.todolists.forEach((td) => state[td.id] = [])
+        });
     }
-}
-type InferActionsType<T> = T extends {[key: string]: infer U} ? U: never
-type TaskActionsType = ReturnType<InferActionsType<typeof taskActions>>
+})
 
-export const taskActions = {
-    setTasks: (todolistId: string, tasks: TaskType[]) => ({type: 'TASKS/SET_TASKS', payload: {todolistId, tasks}} as const),
-    addedTask: (task: TaskType) => ({type: 'TASKS/ADDED_TASK', payload: {task: task}} as const),
-    deletedTask: (todolistId: string, taskId: string) => ({type: 'TASKS/DELETED_TASK', payload: {todolistId, taskId}} as const),
-    updatedTask: (model: UpdateTaskModelType) => ({type: 'TASKS/UPDATED_TASK', payload: {model}} as const)
-}
+export const taskReducer = slice.reducer;
 
+export const {setTasks, addedTask, deletedTask, updatedTask} = slice.actions;
 
 export const fetchTasks = (todolistId: string) => async (dispatch: Dispatch) => {
 
     try {
         const {data} = await todolistsApi.getTasks(todolistId)
         batch(() => {
-            dispatch(taskActions.setTasks(todolistId, data.items))
-
+            dispatch(setTasks({todolistId, tasks: data.items}))
         })
     }
     catch(error) {
@@ -77,8 +69,7 @@ export const deleteTask = (todolistId: string, taskId: string) => async (dispatc
         const {data} = await todolistsApi.deleteTask(todolistId, taskId)
         if (data.resultCode === ResultCodesEnum.Success) {
            batch( () => {
-               dispatch(taskActions.deletedTask(todolistId, taskId))
-
+               dispatch(deletedTask({todolistId, taskId}))
            })
         } else {
             appErrorHandle(data, dispatch)
@@ -94,8 +85,7 @@ export const addTask = (todolistId: string, title: string) => async (dispatch: D
         const {data} = await todolistsApi.createTask(todolistId, title)
         if (data.resultCode === ResultCodesEnum.Success) {
             batch(() => {
-                dispatch(taskActions.addedTask(data.data.item))
-
+                dispatch(addedTask({task: data.data.item}))
             })
         } else {
             appErrorHandle(data, dispatch)
@@ -106,19 +96,15 @@ export const addTask = (todolistId: string, title: string) => async (dispatch: D
     }
 }
 export const updateTask = (todolistId: string, taskId: string, model: UpdateTaskModelType) => async (dispatch: Dispatch, getState: () => AppStateType) => {
-    let task = getState().tasks[todolistId].filter(t => t.id === taskId)[0]
     try {
         const {data} = await todolistsApi.updateTask(todolistId, taskId, model)
         if (data.resultCode === ResultCodesEnum.Success) {
-            dispatch(taskActions.updatedTask(data.data))
+            dispatch(updatedTask({ model: data.data}))
         } else {
             appErrorHandle(data, dispatch)
         }
     }
     catch(error) {
-        if (task) {
-            dispatch(taskActions.updatedTask({...task, ...model}))
-        }
         netWorkErrorHandle(error, dispatch)
     }
 }

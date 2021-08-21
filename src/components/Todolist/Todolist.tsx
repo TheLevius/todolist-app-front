@@ -5,7 +5,12 @@ import {EditableSpan} from '../common/EditableSpan/EditableSpan';
 import {DeleteFilled} from '@ant-design/icons/lib';
 import {Task} from './Task/Task';
 import {AddItemForm} from '../AddItemForm/AddItemForm';
-import {changeTodolistTitle, deleteTodolist, FilterValuesType, todolistActions,} from '../../redux/todolist-reducer';
+import {
+    changedTodolistFilter,
+    changeTodolistTitle,
+    deleteTodolist,
+    FilterValuesType,
+} from '../../redux/todolist-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {addTask, fetchTasks} from '../../redux/task-reducer';
 import {AppStateType} from '../../redux/store';
@@ -40,7 +45,7 @@ export const Todolist: FC<{
     }
 
     const onFilterValueChangeHandle = (e: RadioChangeEvent) => {
-        dispatch(todolistActions.changedTodolistFilter(id, e.target.value.toLowerCase() ))
+        dispatch(changedTodolistFilter({todolistId: id, filter: e.target.value.toLowerCase() }))
     }
 
     if(tasks === null) {

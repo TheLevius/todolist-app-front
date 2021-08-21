@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {RequestStatusType} from "../redux/app-reducer";
+import {FilterValuesType} from "../redux/todolist-reducer";
 
 //axios configured instance
 const incu = axios.create({
@@ -84,6 +86,8 @@ export type AuthUserInfoType = {
 
 //TodosTypes
 export type TodolistType = {
+    filter?: FilterValuesType;
+    entityStatus?: RequestStatusType
     id: string;
     addedDate: string;
     order: number;

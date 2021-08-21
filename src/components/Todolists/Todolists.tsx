@@ -9,12 +9,12 @@ import {AppStateType} from "../../redux/store";
 export const Todolists: FC = () => {
 
     const todolists = useSelector<AppStateType, TodolistDomainType[] | null>(state => {
-        return(!!state.todolist ? state.todolist : null)
+        return (!!state.todolist ? state.todolist : null)
     })
 
-    if(!todolists) {
+    if (!todolists) {
         console.log('spinners')
-        return(
+        return (
             <Space size='large'>
                 <Spin size='large' tip='Initialize...'/>
             </Space>
@@ -22,7 +22,7 @@ export const Todolists: FC = () => {
     }
 
     console.log('todolist mapping')
-    return(
+    return (
         <>
             {todolists.map(td => (<Todolist key={td.id} title={td.title} id={td.id} filter={td.filter}/>))}
         </>

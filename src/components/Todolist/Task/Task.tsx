@@ -25,7 +25,7 @@ export const Task: FC<{task: TaskType}> = React.memo(({task}) => {
     const onRemoveTaskClick = () => {
         dispatch(deleteTask(task.todoListId, task.id))
     }
-
+    console.log(`${task.todoListId}, ${task.id} render`)
     return(
         <div style={{display: 'flex', alignItems: 'center', margin: '8px 0'}}>
             <Checkbox checked={task.status === TaskStatusesType.Completed} onChange={onCheckboxChange} style={{marginRight: '16px'}}/>
